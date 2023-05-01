@@ -1,3 +1,4 @@
+const { Player } = require('discord-player');
 const {
   Client,
   Collection,
@@ -11,8 +12,22 @@ const path = require('path');
 require('dotenv').config();
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds],
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildVoiceStates],
 });
+
+const player = Player.singleton(client, {
+  ytdlOptions:{
+    quality:'highestaudio'
+  }
+})
+
+player.events.on('playerStart', (queue, track) => {
+  queue.metadata.channel.send(`**${track.title}** oynatılıyor.`);
+});
+
+player.events.on('emptyQueue', (queue, track)=> {
+  queue.metadata.channel.send('Oynatma durduruldu.')
+})
 
 // command handler
 const commands = [];
@@ -61,7 +76,11 @@ const rest = new REST().setToken(process.env.TOKEN);
 
 client.once(Events.ClientReady, (e) => {
   console.log(`${e.user.tag} olarak oturum açıldı.`);
+  client.user.setPresence({ activities: [{ name: 'i3Bot' }], status: 'idle' });
+  // client.users.send('255832732565897217', 'Bot Online')
 });
+
+
 
 client.on(Events.InteractionCreate, async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
@@ -74,7 +93,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 
   try {
-    await command.execute(interaction);
+    await command.execute({client, interaction});
   } catch (error) {
     console.error(error);
     if (interaction.replied || interaction.deferred) {
