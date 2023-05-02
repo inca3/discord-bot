@@ -54,11 +54,13 @@ for (const folder of commandFolders) {
   }
 }
 
-const rest = new REST().setToken(process.env.TOKEN);
+
 
 (async () => {
   try {
     console.log(`${commands.length} adet (/) komutu bulundu, güncelleniyor.`);
+
+    const rest = new REST().setToken(process.env.TOKEN);
 
     const data = await rest.put(
       Routes.applicationGuildCommands(

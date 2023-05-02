@@ -3,8 +3,8 @@ const { useMasterPlayer } = require('discord-player');
 
 module.exports = {
     data: new SlashCommandBuilder()
-    .setName("stop")
-    .setDescription("Oynatıcıyı durdurur."),
+    .setName("resume")
+    .setDescription("Duraklatılan şarkıyı devam ettirir."),
     async execute({client, interaction}) {
         const player = useMasterPlayer(); // Get the player instance that we created earlier
         const channel = interaction.guild.members.cache.get(interaction.member.user.id).voice.channelId
@@ -19,8 +19,8 @@ module.exports = {
                 await interaction.editReply('Çalınan bir şarkı yok.');
                 return;
             }
-            queue.delete();
-            await interaction.editReply('Müzik durduruldu.');
+            queue.node.resume();
+            await interaction.editReply('Şarkı devam ettiriliyor.');
         } catch (e) {
             console.log(e)
         }
