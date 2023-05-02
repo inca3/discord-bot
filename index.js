@@ -17,7 +17,7 @@ const client = new Client({
 
 const player = Player.singleton(client, {
   ytdlOptions:{
-    quality:'highestaudio'
+    quality:'highest'
   }
 })
 
