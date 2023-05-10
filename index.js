@@ -78,7 +78,7 @@ for (const folder of commandFolders) {
 
 client.once(Events.ClientReady, (e) => {
   console.log(`${e.user.tag} olarak oturum açıldı.`);
-  client.user.setPresence({ activities: [{ name: 'i3Bot' }], status: 'idle' });
+  client.user.setPresence({ activities: [{ name: '/help' }], status: 'idle' });
   // client.users.send('255832732565897217', 'Bot Online')
 });
 
