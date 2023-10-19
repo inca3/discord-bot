@@ -1,4 +1,4 @@
-const { Player } = require('discord-player');
+const { Player } = require("discord-player");
 const {
   Client,
   Collection,
@@ -6,44 +6,48 @@ const {
   Routes,
   Events,
   GatewayIntentBits,
-} = require('discord.js');
-const fs = require('fs');
-const path = require('path');
-require('dotenv').config();
+} = require("discord.js");
+const fs = require("fs");
+const path = require("path");
+require("dotenv").config({ path: ".env.local" });
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildVoiceStates],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildVoiceStates,
+  ],
 });
 
 const player = Player.singleton(client, {
-  ytdlOptions:{
-    quality:'highest'
-  }
-})
+  ytdlOptions: {
+    quality: "highest",
+  },
+});
 
-player.events.on('playerStart', (queue, track) => {
+player.events.on("playerStart", (queue, track) => {
   queue.metadata.channel.send(`**${track.title}** oynatılıyor.`);
 });
 
-player.events.on('emptyQueue', (queue, track)=> {
-  queue.metadata.channel.send('Oynatma durduruldu.')
-})
+player.events.on("emptyQueue", (queue, track) => {
+  queue.metadata.channel.send("Oynatma durduruldu.");
+});
 
 // command handler
 const commands = [];
 client.commands = new Collection();
-const foldersPath = path.join(__dirname, 'commands');
+const foldersPath = path.join(__dirname, "commands");
 const commandFolders = fs.readdirSync(foldersPath);
 
 for (const folder of commandFolders) {
   const commandsPath = path.join(foldersPath, folder);
   const commandFiles = fs
     .readdirSync(commandsPath)
-    .filter((file) => file.endsWith('.js'));
+    .filter((file) => file.endsWith(".js"));
   for (const file of commandFiles) {
     const filePath = path.join(commandsPath, file);
     const command = require(filePath);
-    if ('data' in command && 'execute' in command) {
+    if ("data" in command && "execute" in command) {
       commands.push(command.data.toJSON());
       client.commands.set(command.data.name, command);
     } else {
@@ -53,8 +57,6 @@ for (const folder of commandFolders) {
     }
   }
 }
-
-
 
 (async () => {
   try {
@@ -78,11 +80,9 @@ for (const folder of commandFolders) {
 
 client.once(Events.ClientReady, (e) => {
   console.log(`${e.user.tag} olarak oturum açıldı.`);
-  client.user.setPresence({ activities: [{ name: '/help' }], status: 'idle' });
+  client.user.setPresence({ activities: [{ name: "/help" }], status: "idle" });
   // client.users.send('255832732565897217', 'Bot Online')
 });
-
-
 
 client.on(Events.InteractionCreate, async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
@@ -95,17 +95,17 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 
   try {
-    await command.execute({client, interaction});
+    await command.execute({ client, interaction });
   } catch (error) {
     console.error(error);
     if (interaction.replied || interaction.deferred) {
       await interaction.followUp({
-        content: 'Bu komut kullanılırken bir hata oluştu!',
+        content: "Bu komut kullanılırken bir hata oluştu!",
         ephemeral: true,
       });
     } else {
       await interaction.reply({
-        content: 'Bu komut kullanılırken bir hata oluştu!',
+        content: "Bu komut kullanılırken bir hata oluştu!",
         ephemeral: true,
       });
     }

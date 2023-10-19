@@ -1,10 +1,10 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('help')
-    .setDescription('Bot komutları hakkında bilgi verir.'),
-  async execute({client, interaction}) {
+    .setName("help")
+    .setDescription("Bot komutları hakkında bilgi verir."),
+  async execute({ client, interaction }) {
     await interaction.reply(
       `
       **Sunucu Komutları**\n\n
