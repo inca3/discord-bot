@@ -63,16 +63,17 @@ for (const folder of commandFolders) {
     console.log(`${commands.length} adet (/) komutu bulundu, güncelleniyor.`);
 
     const rest = new REST().setToken(process.env.TOKEN);
-
-    const data = await rest.put(
-      Routes.applicationGuildCommands(
-        process.env.CLIENT_ID,
-        process.env.GUILD_ID
-      ),
-      { body: commands }
-    );
-
-    console.log(`${data.length} adet (/) komutu başarıyla güncellendi.`);
+    const ids = process.env.GUILD_IDS.split(" ");
+    async function createCmds() {
+      for (const id of ids) {
+        const data = await rest.put(
+          Routes.applicationGuildCommands(process.env.CLIENT_ID, id),
+          { body: commands }
+        );
+        console.log(`${data.length} adet (/) komutu başarıyla güncellendi.`);
+      }
+    }
+    await createCmds();
   } catch (error) {
     console.error(error);
   }
@@ -81,7 +82,7 @@ for (const folder of commandFolders) {
 client.once(Events.ClientReady, (e) => {
   console.log(`${e.user.tag} olarak oturum açıldı.`);
   client.user.setPresence({ activities: [{ name: "/help" }], status: "idle" });
-  // client.users.send('255832732565897217', 'Bot Online')
+  client.users.send("255832732565897217", "Bot Aktif!");
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
